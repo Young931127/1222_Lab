@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dice Roller</title>
+  <style>
+    .dice {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      text-align: center;
+    }
+
+    #probabilityContainer {
+      margin-top: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="diceContainer"></div>
+  <div id="probabilityContainer"></div>
+  <button onclick="rollDice()">Roll</button>
+
+  <script>
+    function rollDice() {
+      const diceContainer = document.getElementById('diceContainer');
+      diceContainer.innerHTML = '';
+
+      const results = [];
+      const numberOfDice = 12;
+
+      for (let i = 0; i < numberOfDice; i++) {
+        const result = Math.floor(Math.random() * 6) + 1;
+        results.push(result);
+
+        const diceElement = document.createElement('div');
+        diceElement.classList.add('dice');
+        diceElement.innerHTML = `<img src="images/die${result}.png" alt="Dice ${result}">`;
+        diceContainer.appendChild(diceElement);
+      }
+
+      calculateProbability(results);
+    }
+
+    function calculateProbability(results) {
+      const probabilityMap = {};
+
+      results.forEach(result => {
+        if (!probabilityMap[result]) {
+          probabilityMap[result] = 1;
+        } else {
+          probabilityMap[result]++;
+        }
+      });
+
+      displayProbability(probabilityMap);
+    }
+
+    function displayProbability(probabilityMap) {
+      const probabilityContainer = document.getElementById('probabilityContainer');
+      probabilityContainer.innerHTML = '<h2>Probability</h2>';
+
+      const table = document.createElement('table');
+
+      // Header row
+      const headerRow = table.insertRow(0);
+      const headerCell1 = headerRow.insertCell(0);
+      const headerCell2 = headerRow.insertCell(1);
+      headerCell1.textContent = 'Number';
+      headerCell2.textContent = 'Probability';
+
+      // Data rows
+      for (let i = 1; i <= 6; i++) {
+        const probability = (probabilityMap[i] || 0) / 12 * 100; // Calculate percentage
+        const row = table.insertRow();
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        cell1.textContent = i;
+        cell2.textContent = `${probability.toFixed(2)}%`;
+      }
+
+      probabilityContainer.appendChild(table);
+    }
+  </script>
+</body>
+</html>
